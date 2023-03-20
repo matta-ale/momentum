@@ -1,0 +1,89 @@
+Exception in thread Thread-7 (close_short_thread):
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/Momentum/Binance_futures.py", line 625, in close_short_thread
+    cierre_to_excel(activo, cantidad_actual, profit_loss, resultado_usdt, resultado, time_close, precio_cierre, precio_cierre_target, motivo)
+  File "/root/Momentum/Binance_futures.py", line 46, in cierre_to_excel
+    index = dfTrades.loc[dfTrades['Activo'] == activo,:].tail(1).index[0] #filtro la última fila(tail(1)) en la que Activo==activo y guardo el index
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/indexes/base.py", line 5039, in __getitem__
+    return getitem(key)
+IndexError: index 0 is out of bounds for axis 0 with size 0
+Exception in thread Thread-51 (open_short_thread):
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/Momentum/Binance_futures.py", line 574, in open_short_thread
+    short_order, qtty, avg_price = open_short(precio_input, activo, cantidad_aper, digits_cant[activo[:-4]])
+  File "/root/Momentum/Binance_futures.py", line 339, in open_short
+    short_order_os = client.futures_create_order(symbol=activo,contractType = 'PERPETUAL', side = 'SELL', type = 'LIMIT',price = precio_actual, quantity = cant_ajust,timeInForce = 'GTX') #acá lo pongo quoteOrderQty porque le digo los BTC que tengo (supongo que compro ETHBTC)       
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 5985, in futures_create_order
+    return self._request_futures_api('post', 'order', True, data=params)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 339, in _request_futures_api
+    return self._request(method, uri, signed, True, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 315, in _request
+    return self._handle_response(self.response)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 324, in _handle_response
+    raise BinanceAPIException(response, response.status_code, response.text)
+binance.exceptions.BinanceAPIException: APIError(code=-4164): Order's notional must be no smaller than 5.0 (unless you choose reduce only)
+Exception in thread Thread-7 (open_long_thread):
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/Momentum/Binance_futures.py", line 515, in open_long_thread
+    long_order, qtty, avg_price = open_long(precio_input, activo, cantidad_aper, digits_cant[activo[:-4]])
+  File "/root/Momentum/Binance_futures.py", line 155, in open_long
+    client.futures_change_leverage(symbol=activo, contractType = 'PERPETUAL', leverage=1)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 6071, in futures_change_leverage
+    return self._request_futures_api('post', 'leverage', True, data=params)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 339, in _request_futures_api
+    return self._request(method, uri, signed, True, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 315, in _request
+    return self._handle_response(self.response)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 324, in _handle_response
+    raise BinanceAPIException(response, response.status_code, response.text)
+binance.exceptions.BinanceAPIException: APIError(code=0): Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.
+Exception in thread Thread-9 (open_short_thread):
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/Momentum/Binance_futures.py", line 574, in open_short_thread
+    short_order, qtty, avg_price = open_short(precio_input, activo, cantidad_aper, digits_cant[activo[:-4]])
+  File "/root/Momentum/Binance_futures.py", line 325, in open_short
+    client.futures_change_leverage(symbol=activo, contractType = 'PERPETUAL', leverage=1)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 6071, in futures_change_leverage
+    return self._request_futures_api('post', 'leverage', True, data=params)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 339, in _request_futures_api
+    return self._request(method, uri, signed, True, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 315, in _request
+    return self._handle_response(self.response)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 324, in _handle_response
+    raise BinanceAPIException(response, response.status_code, response.text)
+binance.exceptions.BinanceAPIException: APIError(code=0): Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.
+Exception in thread Thread-8 (open_short_thread):
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/Momentum/Binance_futures.py", line 574, in open_short_thread
+    short_order, qtty, avg_price = open_short(precio_input, activo, cantidad_aper, digits_cant[activo[:-4]])
+  File "/root/Momentum/Binance_futures.py", line 325, in open_short
+    client.futures_change_leverage(symbol=activo, contractType = 'PERPETUAL', leverage=1)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 6071, in futures_change_leverage
+    return self._request_futures_api('post', 'leverage', True, data=params)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 339, in _request_futures_api
+    return self._request(method, uri, signed, True, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 315, in _request
+    return self._handle_response(self.response)
+  File "/usr/local/lib/python3.10/dist-packages/binance/client.py", line 324, in _handle_response
+    raise BinanceAPIException(response, response.status_code, response.text)
+binance.exceptions.BinanceAPIException: APIError(code=0): Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error.
