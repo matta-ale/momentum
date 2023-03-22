@@ -1,1 +1,1 @@
-{"cant_inic": 500.0, "disponible": 478.15, "cantidad_actual": 478.15, "profit_loss": -4.37, "posiciones": {}, "access": "unlocked"}
+{"cant_inic": 500.0, "disponible": 237.9609972182992, "cantidad_actual": 465.5636056899999, "profit_loss": -6.882754062000018, "posiciones": {"BNBUSDT": {"posicion": "VENDIDO", "cantidad": 0.35, "precio_aper": 326.92, "stop_value": 331.8238, "take_profit": 317.1124}, "SOLUSDT": {"posicion": "COMPRADO", "cantidad": 5.0, "precio_aper": 22.624000000000002, "stop_value": 22.284640000000003, "take_profit": 23.302720000000004}}, "access": "unlocked"}

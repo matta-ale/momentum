@@ -8,5 +8,12 @@ def sendTelegram(message):
     url = 'https://api.telegram.org/bot1700277460:AAG4YdeSJZ0iZEYmambFKZN5pZTEVMb-YQ8/sendMessage?chat_id='+chatId+'&text="{}"'.format(message)
     requests.get(url)
     return
+def sendErrorTelegram(message):
+    import requests
+    chatId = '-795601453'
+    url = 'https://api.telegram.org/bot1700277460:AAG4YdeSJZ0iZEYmambFKZN5pZTEVMb-YQ8/sendMessage?chat_id='+chatId+'&text="{}"'.format(message)
+    requests.get(url)
+    return
+
 
 

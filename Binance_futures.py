@@ -8,10 +8,11 @@ from binance.client import Client
 import math
 import datetime
 import time
-from telegram import sendTelegram
+from telegram import sendTelegram,sendErrorTelegram
 import telegram
 import pandas as pd
 import json
+from decimal import Decimal
 
 
 client = Client(config_futures.API_KEY, config_futures.API_SECRET)
@@ -238,7 +239,7 @@ def open_long(precio_input, activo, cantidad, digits, min_usdt): #compra en futu
                 logging.debug('no se pudo cancelar orden (en NEW)')
             time.sleep(1)
             exec_qtty = float(long_order_ol['executedQty'])
-            cant_ajust -= exec_qtty  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
+            cant_ajust = float(Decimal(str(cant_ajust)) - Decimal(str(exec_qtty)))  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
             logging.debug(exec_qtty)
             long_order_ol = update_order(activo, orderId)
             estado = long_order_ol['status']
@@ -263,7 +264,7 @@ def open_long(precio_input, activo, cantidad, digits, min_usdt): #compra en futu
                     qtty_open_order = float(update_order_ol['cumQuote'])  #*(1-0.0002) aquí no lo sacamos para que no altere el valor cripto
                     avg_price_order = float(update_order_ol['avgPrice'])
                     exec_qtty = float(update_order_ol['executedQty'])
-                    cant_ajust -= exec_qtty
+                    cant_ajust = float(Decimal(str(cant_ajust)) - Decimal(str(exec_qtty)))
                     logging.debug(cant_ajust)
                     logging.debug(exec_qtty)
                     order_list.append(orderId)
@@ -334,7 +335,7 @@ def open_long_sin_slip(precio_input, activo, cantidad, digits, min_usdt): #compr
                 logging.debug('no se pudo cancelar orden (en NEW)')
             time.sleep(1)
             exec_qtty = float(long_order_ol['executedQty']) #era cancel_order_ol
-            cant_ajust -= exec_qtty  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
+            cant_ajust = float(Decimal(str(cant_ajust)) - Decimal(str(exec_qtty)))  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
             logging.debug(exec_qtty)
             long_order_ol = update_order(activo, orderId)
             estado = long_order_ol['status']
@@ -364,7 +365,7 @@ def open_long_sin_slip(precio_input, activo, cantidad, digits, min_usdt): #compr
                     qtty_open_order = float(update_order_ol['cumQuote'])  #*(1-0.0002) aquí no lo sacamos para que no altere el valor cripto
                     avg_price_order = float(update_order_ol['avgPrice'])
                     exec_qtty = float(update_order_ol['executedQty'])
-                    cant_ajust -= exec_qtty
+                    cant_ajust = float(Decimal(str(cant_ajust)) - Decimal(str(exec_qtty)))
                     logging.debug(cant_ajust)
                     logging.debug(exec_qtty)
                     order_list.append(orderId)
@@ -392,7 +393,7 @@ def open_long_sin_slip(precio_input, activo, cantidad, digits, min_usdt): #compr
             update_order_ol = update_order(activo, i)
             logging.debug(update_order_ol) 
         qtty_usdt_order = float(update_order_ol['cumQuote'])
-        qtty_usdt+= qtty_usdt_order
+        qtty_usdt += qtty_usdt_order
         qtty_order = float(update_order_ol['executedQty']) 
         qtty += qtty_order
     if qtty > 0:
@@ -428,8 +429,8 @@ def close_long(activo, cantidad, precio_aper, precio_actual, min_usdt): #cierro 
                 qtty_close_order = float(update_order_cl['cumQuote'])  #*(1-0.0002) aquí no lo sacamos para que no altere el valor cripto
                 avg_price_order = float(update_order_cl['avgPrice'])
                 exec_qtty = float(update_order_cl['executedQty'])
-                cantidad -= exec_qtty #cantidad se transforma en cantidad que falta
-                logging.debug(qtty_close)
+                cantidad = float(Decimal(str(cantidad)) - Decimal(str(exec_qtty))) #cantidad se transforma en cantidad que falta
+                logging.debug(qtty_close_order)
                 order_list.append(orderId)
                 time.sleep(1)
             update_order_cl = update_order(activo, orderId)
@@ -461,7 +462,7 @@ def close_long(activo, cantidad, precio_aper, precio_actual, min_usdt): #cierro 
                         
                         update_order_cl = update_order(activo, orderId)
                         exec_qtty = float(update_order_cl['executedQty'])
-                        cantidad -= exec_qtty  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
+                        cantidad = float(Decimal(str(cantidad)) - Decimal(str(exec_qtty)))  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
                         logging.debug(exec_qtty)
                         estado = update_order_cl['status']
                         logging.debug(estado)
@@ -550,7 +551,7 @@ def open_short(precio_input, activo, cantidad, digits, min_usdt): #short en futu
                 logging.debug('no se pudo cancelar orden (en NEW)')
             time.sleep(1)
             exec_qtty = float(short_order_os['executedQty'])
-            cant_ajust -= exec_qtty  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
+            cant_ajust = float(Decimal(str(cant_ajust)) - Decimal(str(exec_qtty)))  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
             logging.debug(exec_qtty)
             short_order_os = update_order(activo, orderId)
             estado = short_order_os['status']
@@ -575,7 +576,7 @@ def open_short(precio_input, activo, cantidad, digits, min_usdt): #short en futu
                     qtty_open_order = float(short_order_os['cumQuote'])  #*(1-0.0002) aquí no lo sacamos para que no altere el valor cripto
                     avg_price_order = float(short_order_os['avgPrice'])
                     exec_qtty = float(short_order_os['executedQty'])
-                    cant_ajust -= exec_qtty
+                    cant_ajust = float(Decimal(str(cant_ajust)) - Decimal(str(exec_qtty)))
                     logging.debug(cant_ajust)
                     logging.debug(exec_qtty)
                     order_list.append(orderId)
@@ -599,7 +600,7 @@ def open_short(precio_input, activo, cantidad, digits, min_usdt): #short en futu
             update_order_os = update_order(activo, i)
             logging.debug(update_order_os)  
         qtty_usdt_order = float(update_order_os['cumQuote'])
-        qtty_usdt+= qtty_usdt_order
+        qtty_usdt += qtty_usdt_order
         qtty_order = float(update_order_os['executedQty']) 
         qtty += qtty_order
     avg_price = float(qtty_usdt)/float(qtty)    
@@ -646,7 +647,7 @@ def open_short_sin_slip(precio_input, activo, cantidad, digits, min_usdt): #shor
                 logging.debug('no se pudo cancelar orden (en NEW)')
             time.sleep(1)
             exec_qtty = float(short_order_os['executedQty'])
-            cant_ajust -= exec_qtty  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
+            cant_ajust = float(Decimal(str(cant_ajust)) - Decimal(str(exec_qtty)))  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
             logging.debug(exec_qtty)
             short_order_os = update_order(activo, orderId)
             estado = short_order_os['status']
@@ -676,7 +677,7 @@ def open_short_sin_slip(precio_input, activo, cantidad, digits, min_usdt): #shor
                     qtty_open_order = float(short_order_os['cumQuote'])  #*(1-0.0002) aquí no lo sacamos para que no altere el valor cripto
                     avg_price_order = float(short_order_os['avgPrice'])
                     exec_qtty = float(short_order_os['executedQty'])
-                    cant_ajust -= exec_qtty
+                    cant_ajust = float(Decimal(str(cant_ajust)) - Decimal(str(exec_qtty)))
                     logging.debug(cant_ajust)
                     logging.debug(exec_qtty)
                     order_list.append(orderId)
@@ -703,7 +704,7 @@ def open_short_sin_slip(precio_input, activo, cantidad, digits, min_usdt): #shor
             update_order_os = update_order(activo, i)
             logging.debug(update_order_os)  
         qtty_usdt_order = float(update_order_os['cumQuote'])
-        qtty_usdt+= qtty_usdt_order
+        qtty_usdt += qtty_usdt_order
         qtty_order = float(update_order_os['executedQty']) 
         qtty += qtty_order
     if qtty > 0:
@@ -728,6 +729,7 @@ def close_short(activo, cantidad, precio_aper, precio_actual, min_usdt): #cierro
             time.sleep(10) 
             update_order_cs = update_order(activo, orderId)
             estado = update_order_cs['status']
+            logging.debug(estado)
             if estado == 'PARTIALLY_FILLED':
                 try:
                     update_order_cs = client.futures_cancel_order(symbol = activo, orderId = orderId) #puse esto antes para que pare de fillear pedazos y luego sí calcule las qtty
@@ -738,8 +740,8 @@ def close_short(activo, cantidad, precio_aper, precio_actual, min_usdt): #cierro
                 qtty_close_order = float(update_order_cs['cumQuote'])  #*(1-0.0002) aquí no lo sacamos para que no altere el valor cripto
                 avg_price_order = float(update_order_cs['avgPrice'])
                 exec_qtty = float(update_order_cs['executedQty'])
-                cantidad -= exec_qtty
-                logging.debug(qtty_close)
+                cantidad = float(Decimal(str(cantidad)) - Decimal(str(exec_qtty)))
+                logging.debug(qtty_close_order)
                 order_list.append(orderId)
                 time.sleep(1)
             update_order_cs = update_order(activo, orderId)
@@ -770,7 +772,7 @@ def close_short(activo, cantidad, precio_aper, precio_actual, min_usdt): #cierro
                             logging.debug('no se pudo cancelar orden (en delta > 30)')
                         update_order_cs = update_order(activo, orderId)
                         exec_qtty = float(update_order_cs['executedQty'])
-                        cantidad -= exec_qtty  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
+                        cantidad = float(Decimal(str(cantidad)) - Decimal(str(exec_qtty)))  #se le resta a la cantidad por las dudas que suceda que al cancelar de "NEW" a "CANCELED", en el medio se pase a partially filled
                         logging.debug(exec_qtty)
                         estado = update_order_cs['status']
                         logging.debug(estado)
@@ -837,7 +839,7 @@ def open_long_thread(precio_input, activo, cantidad_aper, digits_cant, digits, s
     try:
         long_order, qtty, avg_price, estado = open_long_sin_slip(precio_input, activo, cantidad_aper, digits_cant[activo[:-4]], min_usdt[activo[:-4]])
     except Exception as e:
-        sendTelegram(e)
+        sendErrorTelegram(e)
         sendTelegram('FALLO OPEN LONG DE '+activo)
     # hacemos el resto de las operaciones con el feedback:
     if estado == 'FILLED':
@@ -871,7 +873,7 @@ def close_long_thread(activo, cantidad, precio_aper, precio_cierre_target, motiv
     try:
         close_long_order, qtty_close, avg_price, estado = close_long(activo, cantidad, precio_aper, precio_cierre_target, min_usdt[activo[:-4]])
     except Exception as e:
-        sendTelegram(e)
+        sendErrorTelegram(e)
         sendTelegram('CUIDADO ERROR EN CIERRE DE '+activo)
     # hacemos el resto de las operaciones con el feedback:
     sendTelegram('CERRADO LONG DE ' + activo +' POR ' + motivo)
@@ -904,7 +906,7 @@ def open_short_thread(precio_input, activo, cantidad_aper, digits_cant, digits, 
     try:
         short_order, qtty, avg_price, estado = open_short_sin_slip(precio_input, activo, cantidad_aper, digits_cant[activo[:-4]], min_usdt[activo[:-4]])
     except Exception as e:
-        sendTelegram(e)
+        sendErrorTelegram(e)
         sendTelegram('FALLO OPEN SHORT DE '+activo)
     # hacemos el resto de las operaciones con el feedback:
     if estado == 'FILLED':
@@ -938,7 +940,7 @@ def close_short_thread(activo, cantidad, precio_aper, precio_cierre_target, moti
     try:
         close_short_order, qtty_close, avg_price, estado = close_short(activo, cantidad, precio_aper, precio_cierre_target, min_usdt[activo[:-4]])
     except Exception as e:
-        sendTelegram(e)
+        sendErrorTelegram(e)
         sendTelegram('CUIDADO ERROR EN CIERRE DE '+activo)
     # hacemos el resto de las operaciones con el feedback:
     sendTelegram('CERRADO SHORT DE ' + activo +' POR ' + motivo)
